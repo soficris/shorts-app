@@ -17,5 +17,4 @@ const sequelize = new Sequelize( //metodo construtor
     }
 ); //o 4 parametro é sempre um json de informações do servidor
 
-
-module.exports = sequelize; //o objeto sequelize pode ser acessável por outros arquivos
+module.exports = sequelize; //o objeto sequelize pode ser acessável por outros arquivos, publico 
