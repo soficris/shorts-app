@@ -1,8 +1,94 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+:root {
+    --primary-color: #ff0050;
+    /* TikTok-like Red */
+    --secondary-color: #00f2ea;
+    /* TikTok-like Cyan */
 }
 
-a {
-  color: #00B7FF;
+body {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar-brand {
+    font-weight: 800;
+    color: var(--primary-color) !important;
+    font-size: 1.5rem;
+}
+
+.hero-section {
+    background: linear-gradient(135deg, #000 0%, #222 100%);
+    color: white;
+    padding: 100px 0;
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #e60045;
+    border-color: #e60045;
+}
+
+.video-card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s;
+    background: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.video-card:hover {
+    transform: translateY(-5px);
+}
+
+.thumbnail-placeholder {
+    width: 100%;
+    aspect-ratio: 9/16;
+    background-color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    position: relative;
+}
+
+.play-icon {
+    font-size: 3rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.badge-views {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+}
+
+.auth-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.auth-header {
+    background: linear-gradient(135deg, #000 0%, #222 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(255, 0, 80, 0.25);
 }

@@ -19,8 +19,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/', indexRouter); // se você receber chamado para a raiz do site, passe o controle para o indexRouter
+app.use('/users', usersRouter);  
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -40,6 +40,7 @@ app.use(function(err, req, res, next) {
 
 //testa a conexão com o mysql
 const sequelize = require('./config/database'); //importa o objeto sequelize do arquivo database.js
+const User = require('./modules/user/user'); //importa o modelo User do arquivo user.js
 sequelize.sync({alter :true}) //sincroniza os modelos com o banco de dados, criando as tabelas se necessário
   .then(() => console.log ('Sincronia realizada'))
   .catch(err => console.error('Erro de sincronia', err));
