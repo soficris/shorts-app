@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const flash = require('connect-flash'); 
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -16,6 +17,17 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(session ({
+  secret : process.env.SESSION_SECRET, 
+  resave : false,
+  saveUninitialized : false, 
+  cookie : {maxAge: 1000 * 60 * 60 * 24} 
+}))
+app.use(flash); 
+app.use((req, res, next) => {
+  res.locals.messages = req.flash(); //cria uma variável local chamada messages que tem flash para serem usadas nas views
+  next();
+});
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -40,7 +52,7 @@ app.use(function(err, req, res, next) {
 
 //testa a conexão com o mysql
 const sequelize = require('./config/database'); //importa o objeto sequelize do arquivo database.js
-const User = require('./modules/user/user'); //importa o modelo User do arquivo user.js
+const User = require('./modules/user/userModel'); //importa o modelo User do arquivo user.js
 sequelize.sync({alter :true}) //sincroniza os modelos com o banco de dados, criando as tabelas se necessário
   .then(() => console.log ('Sincronia realizada'))
   .catch(err => console.error('Erro de sincronia', err));
