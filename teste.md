@@ -4,7 +4,7 @@
 
 - **Projeto:** Shortz-App
 - **Versão:** 1.0v
-- **Grupo:** Amandha Kae, Ana Julia, Sofia Silva 
+- **Grupo:** Amandha Kae, Ana Julia, Carlos, Sofia Silva 
 - **Data de Criação: ** 10 de março de 2026
 
 ## 2 - Escopo 
