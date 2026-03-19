@@ -45,3 +45,44 @@ exports.register = async (req, res) => {
         res.redirect('/register'); 
     }
 };
+
+exports.login = async (req, res) => {
+   try {
+      const { login, password } = req.body; // login pode ser email ou username
+
+      // 1. Buscar usuário por email OU username
+      const user = await User.findOne({
+         where: {
+            [require('sequelize').Op.or]: [{ email: login }, { username: login }]
+         }
+      });
+
+      // 2. Verificar se usuário existe e se a senha bate
+      if (!user || !(await bcrypt.compare(password, user.password))) {
+         req.flash('error', 'E-mail/Usuário ou senha incorretos.');
+         return res.redirect('/login');
+      }
+
+      // 3. Criar a sessão do usuário
+      req.session.user = {
+         id: user.id,
+         username: user.username,
+         email: user.email
+      };
+
+      // 4. Redirecionar para o feed
+      res.redirect('/feed');
+
+   } catch (error) {
+      console.error(error);
+      req.flash('error', 'Ocorreu um erro ao tentar entrar.');
+      res.redirect('/login');
+   }
+};
+
+
+exports.logout = (req, res) => {
+   req.session.destroy(() => {
+      res.redirect('/');
+   });
+};

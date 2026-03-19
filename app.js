@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const session = require('express-session');
 const flash = require('connect-flash'); 
 
 var indexRouter = require('./routes/index');
@@ -18,12 +19,12 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(session ({
-  secret : process.env.SESSION_SECRET, 
+  secret : process.env.SESSION_SECRET || 'chave_super_secreta_nao_compartilhar', 
   resave : false,
   saveUninitialized : false, 
   cookie : {maxAge: 1000 * 60 * 60 * 24} 
 }))
-app.use(flash); 
+app.use(flash()); 
 app.use((req, res, next) => {
   res.locals.messages = req.flash(); //cria uma variável local chamada messages que tem flash para serem usadas nas views
   next();
