@@ -1,3 +1,4 @@
+// middleware para verificar se o usuário está logado
 module.exports = (req, res, next) => {
     if (req.session.user) {
         return next(); // Está logado, pode seguir

@@ -5,6 +5,7 @@
     /* TikTok-like Cyan */
 }
 
+
 body {
     background-color: #f8f9fa;
     min-height: 100vh;
@@ -12,11 +13,28 @@ body {
     flex-direction: column;
 }
 
+
 .navbar-brand {
     font-weight: 800;
     color: var(--primary-color) !important;
     font-size: 1.5rem;
 }
+
+
+.nav-link {
+    color: #333;
+    font-weight: 500;
+    padding: 12px 20px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+}
+
+
+.nav-link:hover, .nav-link.active {
+    background-color: rgba(255, 0, 80, 0.05);
+    color: var(--primary-color);
+}
+
 
 .hero-section {
     background: linear-gradient(135deg, #000 0%, #222 100%);
@@ -25,15 +43,20 @@ body {
     text-align: center;
 }
 
+
 .btn-primary {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
+    padding: 12px;
+    font-weight: 600;
 }
+
 
 .btn-primary:hover {
     background-color: #e60045;
     border-color: #e60045;
 }
+
 
 .video-card {
     border: none;
@@ -42,11 +65,14 @@ body {
     transition: transform 0.3s;
     background: white;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
 }
+
 
 .video-card:hover {
     transform: translateY(-5px);
 }
+
 
 .thumbnail-placeholder {
     width: 100%;
@@ -59,10 +85,12 @@ body {
     position: relative;
 }
 
+
 .play-icon {
     font-size: 3rem;
     color: rgba(255, 255, 255, 0.8);
 }
+
 
 .badge-views {
     position: absolute;
@@ -72,7 +100,9 @@ body {
     padding: 2px 8px;
     border-radius: 5px;
     font-size: 0.8rem;
+    color: white;
 }
+
 
 .auth-card {
     border: none;
@@ -81,6 +111,7 @@ body {
     overflow: hidden;
 }
 
+
 .auth-header {
     background: linear-gradient(135deg, #000 0%, #222 100%);
     color: white;
@@ -88,7 +119,50 @@ body {
     text-align: center;
 }
 
+
 .form-control:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 0.25rem rgba(255, 0, 80, 0.25);
+}
+
+
+footer {
+    margin-top: auto;
+}
+
+
+.sidebar {
+    background: white;
+    border-right: 1px solid #eee;
+    height: calc(100vh - 56px);
+    position: sticky;
+    top: 56px;
+}
+
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #ddd;
+}
+
+
+.profile-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    background: white;
+}
+
+
+.avatar-preview {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    background-color: #eee;
 }

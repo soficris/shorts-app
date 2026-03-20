@@ -28,9 +28,10 @@ const User = sequelize.define( //o define quer receber uma string, uma entidade;
             type : DataTypes.STRING(100),
             allowNull : false
         }, 
-        profilePic : {
+        profilePicture : {
             type : DataTypes.STRING,
-            allowNull : true
+            allowNull : true,
+            defaultValue : 'default-profile' //imagem padrão para usuários sem foto de perfil
         }, 
         bio : {
             type : DataTypes.TEXT,
