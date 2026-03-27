@@ -1,5 +1,7 @@
 const User = require('./userModel'); 
 const bcrypt = require('bcryptjs'); 
+const fs = require("fs"); 
+const path = require("path"); 
 
 
 exports.register = async (req, res) => {
@@ -64,11 +66,8 @@ exports.login = async (req, res) => {
       }
 
       // 3. Criar a sessão do usuário
-      req.session.user = {
-         id: user.id,
-         username: user.username,
-         email: user.email
-      };
+      const userData = await this.getProfile(user.id); 
+      req.session.user = userData; //armazenar os dados do usuário na sessão para usar em outras partes do site
 
       // 4. Redirecionar para o feed
       res.redirect('/feed');
@@ -79,7 +78,6 @@ exports.login = async (req, res) => {
       res.redirect('/login');
    }
 };
-
 
 exports.logout = (req, res) => {
    req.session.destroy(() => {
@@ -112,8 +110,22 @@ exports.updateProfile = async (req, res) => {
         if (req.file) {
             updateData.profilePicture = req.file.filename;
         }
+        const oldUser = await User.findByPk(userId); 
 
         await User.update(updateData, { where: { id: userId } });
+        //Se uma nova foto foi enviada e o usuario tinha uma foto anterior
+        //apagar a foto antiga do sistema de arquivos 
+        if(req.file && oldUser.profilePicture && oldUser.profilePicture !== 'default-profile.png') {
+            const oldProfilePicPath = path.join(__dirname, '../../public/uploads/profile', oldUser.profilePicture); 
+            fs.unlink(oldProfilePicPath, (err) => {
+                if (err) console.error('Erro ao excluir foto de perfil antiga:', err);
+                else console.log('Foto de perfil antiga apagada:', oldProfilePicPath); 
+            }); 
+        }
+
+
+        const userData = await this.getProfile(userId); 
+        req.session.user = userData; // Atualiza os dados do usuário na sessão
 
         req.flash('success', 'Perfil atualizado com sucesso!');
         res.redirect('/profile/edit');

@@ -1,0 +1,29 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h2 class="fw-bold mb-0">Entrar no Shortz-App</h2>
+                </div>
+                <div class="p-4">
+                    <form action="/login" method="POST">
+                        <div class="mb-3">
+                            <label for="login" class="form-label">E-mail ou Usuário</label>
+                            <input type="text" class="form-control" id="login" name="login" 
+                                      placeholder="Seu e-mail ou nome de usuário" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Senha</label>
+                            <input type="password" class="form-control" id="password" name="password"
+                                       placeholder="Sua senha" required>
+                        </div>
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg">Entrar</button>
+                        </div>
+                        <p class="text-center text-muted">Não tem uma conta? <a href="/register">Crie uma agora</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

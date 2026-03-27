@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+var expressLayouts = require('express-ejs-layouts'); 
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -7,33 +8,38 @@ const session = require('express-session');
 const flash = require('connect-flash'); 
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var usersRouter = require('./modules/user/userRoutes');
 
 var app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views/pages'));
+app.set("layout", path.join(__dirname, "views/layouts/main")); 
+app.use(expressLayouts); 
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
 app.use(session ({
   secret : process.env.SESSION_SECRET || 'chave_super_secreta_nao_compartilhar', 
   resave : false,
   saveUninitialized : false, 
   cookie : {maxAge: 1000 * 60 * 60 * 24} 
 }))
+
 app.use(flash()); 
 app.use((req, res, next) => {
   res.locals.messages = req.flash(); //cria uma variável local chamada messages que tem flash para serem usadas nas views
+  res.locals.user = req.session.user || null; //cria uma variável local chamada user que tem o valor do usuário logado ou null se não tiver
   next();
 });
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter); // se você receber chamado para a raiz do site, passe o controle para o indexRouter
-app.use('/users', usersRouter);  
+app.use('/', usersRouter);  
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
