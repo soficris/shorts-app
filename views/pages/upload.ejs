@@ -1,0 +1,37 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0">Enviar Novo Vídeo</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form action="/upload" method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Título do Vídeo</label>
+                            <input type="text" class="form-control" id="title" name="title" placeholder="Um título cativante para seu vídeo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Descrição</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" placeholder="Conte mais sobre seu vídeo (opcional)"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="videoFile" class="form-label">Arquivo de Vídeo</label>
+                            <input type="file" class="form-control" id="video" name="video" accept="video/*" required>
+                            <div class="form-text">Formatos suportados: MP4, WebM, Ogg. Tamanho máximo: 100MB.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="thumbnailFile" class="form-label">Capa (Thumbnail)</label>
+                            <input type="file" class="form-control" id="thumbnail" name="thumbnail" accept="image/*" required>
+                            <div class="form-text">Uma imagem que represente seu vídeo. Formatos: JPG, PNG.</div>
+                        </div>
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Enviar Vídeo</button>
+                            <a href="/feed" class="btn btn-outline-secondary btn-lg">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

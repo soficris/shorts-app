@@ -9,6 +9,7 @@ const flash = require('connect-flash');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./modules/user/userRoutes');
+var videoRoutes = require("./modules/video/videoRoutes"); // [ADICIONAR] Importa as rotas de vídeo
 
 var app = express();
 
@@ -40,7 +41,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter); // se você receber chamado para a raiz do site, passe o controle para o indexRouter
 app.use('/', usersRouter);  
-
+app.use('/', videoRoutes); // [ADICIONAR] Usa as rotas de vídeo
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -60,6 +61,8 @@ app.use(function(err, req, res, next) {
 //testa a conexão com o mysql
 const sequelize = require('./config/database'); //importa o objeto sequelize do arquivo database.js
 const User = require('./modules/user/userModel'); //importa o modelo User do arquivo user.js
+const Video = require("./modules/video/videoModel"); // [ADICIONAR] Importa o modelo Video
+
 sequelize.sync({alter :true}) //sincroniza os modelos com o banco de dados, criando as tabelas se necessário
   .then(() => console.log ('Sincronia realizada'))
   .catch(err => console.error('Erro de sincronia', err));
