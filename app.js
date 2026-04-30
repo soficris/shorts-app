@@ -59,11 +59,10 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+require("./config/associations"); 
 
 //testa a conexão com o mysql
 const sequelize = require('./config/database'); //importa o objeto sequelize do arquivo database.js
-const User = require('./modules/user/userModel'); //importa o modelo User do arquivo user.js
-const Video = require("./modules/video/videoModel"); // [ADICIONAR] Importa o modelo Video
 
 sequelize.sync({alter :true}) //sincroniza os modelos com o banco de dados, criando as tabelas se necessário
   .then(() => console.log ('Sincronia realizada'))

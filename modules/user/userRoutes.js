@@ -33,6 +33,7 @@ router.get("/feed", authMiddleware, async (req, res) => {
     } catch (error){
     console.error("Erro ao carregar o feed:", error); 
     req.flash("error", "Erro ao carregar o feed de vídeos.");
+    res.redirect("/login"); // Redireciona para login em caso de erro
     }
 });
 
