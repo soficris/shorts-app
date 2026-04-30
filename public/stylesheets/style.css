@@ -230,3 +230,26 @@ background-color: #f8f9fa;
 padding: 20px;
 border-radius: 8px;
 }
+
+/* Estilos para o perfil do usuário */
+.profile-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    background: white;
+}
+
+.avatar-preview {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    background-color: #eee;
+}
+
+/* Garante que o grid de vídeos no perfil seja responsivo */
+.profile-videos-grid .video-card {
+    margin-bottom: 20px;
+}

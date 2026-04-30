@@ -68,10 +68,5 @@ sequelize.sync({alter :true}) //sincroniza os modelos com o banco de dados, cria
   .then(() => console.log ('Sincronia realizada'))
   .catch(err => console.error('Erro de sincronia', err));
 
-/*
-sequelize.authenticate() //se autenticar no servidor com as informações do database.js 
-  .then(()=> console.log('Conexão com MySQL okay!') )
-  .catch(err => console.error('Erro de conexão', err)); 
-*/
 
 module.exports = app;

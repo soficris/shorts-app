@@ -1,0 +1,77 @@
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="profile-card text-center p-4 mb-4">
+                <img src="<%= profileUser.profilePicture ? 
+                    '/uploads/profiles/' + profileUser.profilePicture : 
+                    '/images/default-profile.png' %>" 
+                    alt="<%= profileUser.username %>" class="avatar-preview mb-3">
+
+                <h2 class="h4 fw-bold mb-1"><%= profileUser.fullName %></h2>
+                <p class="text-muted">@<%= profileUser.username %></p>
+
+                <% if (profileUser.bio) { %>
+                    <p class="mb-3"><%= profileUser.bio %></p>
+                <% } else { %>
+                    <p class="text-muted mb-3">Nenhuma biografia ainda.</p>
+                <% } %>
+
+                <div class="d-flex justify-content-center gap-4 mb-4">
+                    <div>
+                        <h5 class="mb-0 fw-bold"><%= profileUser.videosCount %></h5>
+                        <small class="text-muted">Vídeos</small>
+                    </div>
+                    <div>
+                        <h5 class="mb-0 fw-bold"><%= profileUser.followersCount %></h5>
+                        <small class="text-muted">Seguidores</small>
+                    </div>
+                    <div>
+                        <h5 class="mb-0 fw-bold"><%= profileUser.followingCount %></h5>
+                        <small class="text-muted">Seguindo</small>
+                    </div>
+                </div>
+
+                <% if (isOwner) { %>
+                    <a href="/profile/edit" class="btn btn-primary rounded-pill px-4">Editar Perfil</a>
+                <% } else { %>
+                    <!-- Botão Seguir/Deixar de Seguir (placeholder para postagens futuras) -->
+                    <button class="btn btn-outline-primary rounded-pill px-4">Seguir</button>
+                <% } %>
+            </div>
+
+            <h4 class="fw-bold mb-3">Vídeos de <%= profileUser.fullName %></h4>
+            <div class="row g-4">
+                <% if (profileUser.Videos && profileUser.Videos.length > 0) { %>
+                    <% profileUser.Videos.forEach(video => { %>
+                        <div class="col-6 col-md-4 col-lg-4">
+                            <div class="video-card">
+                                <a href="/video/<%= video.id %>">
+                                    <div class="thumbnail-placeholder" style="background-image: url('/uploads/covers/<%= video.thumbnailPath %>');">
+                                        <i class="bi bi-play-circle play-icon"></i>
+                                        <span class="badge-views"><i class="bi bi-eye"></i> <%= video.views %></span>
+                                    </div>
+                                </a>
+                                <div class="p-3">
+                                    <h6 class="text-truncate mb-1"><a href="/video/<%= video.id %>" class="text-decoration-none text-dark"><%= video.title %></a></h6>
+                                    <div class="d-flex align-items-center">
+                                        <img src="<%= profileUser.profilePicture ? 
+                                            '/uploads/profiles/' + profileUser.profilePicture : 
+                                            '/images/default-profile.png' %>" 
+                                            alt="<%= profileUser.username %>" class="rounded-circle me-2" width="24" height="24">
+                                        <span class="text-muted small">@<%= profileUser.username %></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="col-12">
+                        <div class="alert alert-info text-center" role="alert">
+                            <%= profileUser.fullName %> ainda não postou nenhum vídeo.
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

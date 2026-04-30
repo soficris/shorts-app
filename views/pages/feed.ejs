@@ -24,8 +24,7 @@
                 <a href="/video/<%= video.id %>">
                   <div 
                     class="thumbnail-placeholder"
-                    style="background-image: url('/uploads/covers/<%= video.thumbnailPath %>');"
-                  >
+                    style="background-image: url('/uploads/covers/<%= video.thumbnailPath %>');">
                     <i class="bi bi-play-circle play-icon"></i>
                     <span class="badge-views">
                       <i class="bi bi-eye"></i> <%= video.views %>
@@ -41,18 +40,10 @@
                   </h6>
 
                   <div class="d-flex align-items-center">
-                    <img 
-                      src="<%= video.User.profilePicture 
-                        ? '/uploads/profiles/' + video.User.profilePicture 
-                        : '/images/default-profile.png' %>"
-                      alt="<%= video.User.username %>" 
-                      class="rounded-circle me-2" 
-                      width="24" 
-                      height="24"
-                    >
-                    <span class="text-muted small">
-                      @<%= video.User.username %>
-                    </span>
+                    <a href="/profile/<%= video.User.username %>" class="d-flex align-items-center text-decoration-none">
+                      <img src="<%= video.User.profilePicture ? '/uploads/profiles/' + video.User.profilePicture : '/images/default-profile.png' %>" alt="<%= video.User.username %>" class="rounded-circle me-2" width="24" height="24">
+                      <span class="text-muted small">@<%= video.User.username %></span>
+                    </a>
                   </div>
                 </div>
 
