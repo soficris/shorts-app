@@ -1,0 +1,103 @@
+<div class="container mt-4">
+  <div class="row">
+
+    <!-- 1ª Coluna: Vídeo -->
+    <div class="col-12 col-lg-4 d-flex justify-content-center">
+      <div class="video-player-container mb-4">
+        <video 
+          controls 
+          class="w-100 rounded shadow-sm" 
+          poster="/uploads/covers/<%= video.thumbnailPath %>"
+        >
+          <source src="/video/<%= video.id %>/stream" type="video/mp4">
+          Seu navegador não suporta a tag de vídeo.
+        </video>
+      </div>
+    </div>
+
+    <!-- 2ª Coluna: Dados do Autor/Vídeo e Comentários -->
+    <div class="col-12 col-lg-4">
+      
+      <h1 class="h4 fw-bold mb-2">
+        <%= video.title %>
+      </h1>
+
+      <div class="d-flex align-items-center mb-3">
+        <img 
+          src="<%= video.User.profilePicture 
+            ? '/uploads/profiles/' + video.User.profilePicture 
+            : '/images/default-profile.png' %>" 
+          alt="<%= video.User.username %>" 
+          class="rounded-circle me-2"
+          width="40" 
+          height="40"
+        >
+
+        <div>
+          <h6 class="mb-0"><%= video.User.fullName %></h6>
+          <small class="text-muted">@<%= video.User.username %></small>
+        </div>
+
+        <span class="ms-auto text-muted small">
+          <%= video.views %> visualizações
+        </span>
+      </div>
+
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+          <p class="card-text">
+            <%= video.description %>
+          </p>
+        </div>
+      </div>
+
+      <!-- Seção de Comentários -->
+      <div class="comments-section">
+        <h5 class="mb-3">Comentários (0)</h5>
+        <div class="alert alert-info">
+          Nenhum comentário ainda. Seja o primeiro a comentar!
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 3ª Coluna: Vídeos Sugeridos -->
+    <div class="col-12 col-lg-4 mt-4 mt-lg-0">
+      
+      <h5 class="mb-3">Vídeos Sugeridos</h5>
+
+      <div class="list-group">
+
+        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center mb-2">
+          <img 
+            src="/images/placeholder-cover.jpg" 
+            alt="Capa do Vídeo" 
+            class="me-3 rounded" 
+            width="80" 
+            height="50"
+          >
+          <div>
+            <h6 class="mb-0 text-truncate">Título do Vídeo Sugerido 1</h6>
+            <small class="text-muted">@usuario_sugerido</small>
+          </div>
+        </a>
+
+        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center mb-2">
+          <img 
+            src="/images/placeholder-cover.jpg" 
+            alt="Capa do Vídeo" 
+            class="me-3 rounded" 
+            width="80" 
+            height="50"
+          >
+          <div>
+            <h6 class="mb-0 text-truncate">Título do Vídeo Sugerido 2</h6>
+            <small class="text-muted">@outro_usuario</small>
+          </div>
+        </a>
+
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -7,6 +7,7 @@ var logger = require('morgan');
 const session = require('express-session');
 const flash = require('connect-flash'); 
 
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./modules/user/userRoutes');
 var videoRoutes = require("./modules/video/videoRoutes"); // [ADICIONAR] Importa as rotas de vídeo
@@ -57,6 +58,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
 
 //testa a conexão com o mysql
 const sequelize = require('./config/database'); //importa o objeto sequelize do arquivo database.js

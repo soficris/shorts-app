@@ -1,81 +1,82 @@
 <div class="container-fluid px-lg-5">
-    <div class="row">
-        <%- include("../partials/sidebar") %>
+  <div class="row">
+    <%- include("../partials/sidebar") %>
 
-        <!-- Main Content -->
-        <main class="col-12 col-md-9 col-lg-10 py-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="fw-bold mb-0">Feed Global</h4>
-                <div class="btn-group shadow-sm">
-                    <button class="btn btn-white btn-sm active border">Recentes</button>
-                    <button class="btn btn-white btn-sm border">Populares</button>
+    <!-- Main Content -->
+    <main class="col-12 col-md-9 col-lg-10 py-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold mb-0">Feed Global</h4>
+
+        <div class="btn-group shadow-sm">
+          <button class="btn btn-white btn-sm active border">Recentes</button>
+          <button class="btn btn-white btn-sm border">Populares</button>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <% if (videos && videos.length > 0) { %>
+          <% videos.forEach(video => { %>
+
+            <!-- Video Card -->
+            <div class="col-6 col-md-4 col-lg-3">
+              <div class="video-card">
+                
+                <a href="/video/<%= video.id %>">
+                  <div 
+                    class="thumbnail-placeholder"
+                    style="background-image: url('/uploads/covers/<%= video.thumbnailPath %>');"
+                  >
+                    <i class="bi bi-play-circle play-icon"></i>
+                    <span class="badge-views">
+                      <i class="bi bi-eye"></i> <%= video.views %>
+                    </span>
+                  </div>
+                </a>
+
+                <div class="p-3">
+                  <h6 class="text-truncate mb-1">
+                    <a href="/video/<%= video.id %>" class="text-decoration-none text-dark">
+                      <%= video.title %>
+                    </a>
+                  </h6>
+
+                  <div class="d-flex align-items-center">
+                    <img 
+                      src="<%= video.User.profilePicture 
+                        ? '/uploads/profiles/' + video.User.profilePicture 
+                        : '/images/default-profile.png' %>"
+                      alt="<%= video.User.username %>" 
+                      class="rounded-circle me-2" 
+                      width="24" 
+                      height="24"
+                    >
+                    <span class="text-muted small">
+                      @<%= video.User.username %>
+                    </span>
+                  </div>
                 </div>
+
+              </div>
             </div>
 
-            <div class="row g-4">
-                <!-- Video Card 1 -->
-                <div class="col-6 col-md-4 col-lg-3">
-                    <div class="video-card">
-                        <div class="thumbnail-placeholder">
-                            <i class="bi bi-play-circle play-icon"></i>
-                            <span class="badge-views"><i class="bi bi-eye"></i> 1.2k</span>
-                        </div>
-                        <div class="p-3">
-                            <h6 class="text-truncate mb-1">Como fazer Café Gelado</h6>
-                            <div class="d-flex align-items-center">
-                                <span class="text-muted small">@cafe_master</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          <% }); %>
+        <% } else { %>
 
-                <!-- Video Card 2 -->
-                <div class="col-6 col-md-4 col-lg-3">
-                    <div class="video-card">
-                        <div class="thumbnail-placeholder">
-                            <i class="bi bi-play-circle play-icon"></i>
-                            <span class="badge-views"><i class="bi bi-eye"></i> 850</span>
-                        </div>
-                        <div class="p-3">
-                            <h6 class="text-truncate mb-1">Dica de Node.js #01</h6>
-                            <span class="text-muted small">@dev_junior</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Video Card 3 -->
-                <div class="col-6 col-md-4 col-lg-3">
-                    <div class="video-card">
-                        <div class="thumbnail-placeholder">
-                            <i class="bi bi-play-circle play-icon"></i>
-                            <span class="badge-views"><i class="bi bi-eye"></i> 2.5k</span>
-                        </div>
-                        <div class="p-3">
-                            <h6 class="text-truncate mb-1">Setup Minimalista 2026</h6>
-                            <span class="text-muted small">@tech_lover</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Video Card 4 -->
-                <div class="col-6 col-md-4 col-lg-3">
-                    <div class="video-card">
-                        <div class="thumbnail-placeholder">
-                            <i class="bi bi-play-circle play-icon"></i>
-                            <span class="badge-views"><i class="bi bi-eye"></i> 3.1k</span>
-                        </div>
-                        <div class="p-3">
-                            <h6 class="text-truncate mb-1">Viagem rápida: Japão</h6>
-                            <span class="text-muted small">@travel_vlog</span>
-                        </div>
-                    </div>
-                </div>
+          <div class="col-12">
+            <div class="alert alert-info text-center" role="alert">
+              Nenhum vídeo disponível no momento. Seja o primeiro a enviar um!
             </div>
+          </div>
 
-            <!-- Botão Carregar Mais -->
-            <div class="text-center mt-5">
-                <button class="btn btn-outline-primary px-5 rounded-pill fw-bold">Carregar mais vídeos</button>
-            </div>
-        </main>
-    </div>
+        <% } %>
+      </div>
+
+      <!-- Botão Carregar Mais -->
+      <div class="text-center mt-5">
+        <button class="btn btn-outline-primary px-5 rounded-pill fw-bold">
+          Carregar mais vídeos
+        </button>
+      </div>
+    </main>
+  </div>
 </div>
