@@ -1,103 +1,217 @@
 <div class="container mt-4">
-  <div class="row">
-
-    <!-- 1ª Coluna: Vídeo -->
-    <div class="col-12 col-lg-4 d-flex justify-content-center">
-      <div class="video-player-container mb-4">
-        <video 
-          controls 
-          class="w-100 rounded shadow-sm" 
-          poster="/uploads/covers/<%= video.thumbnailPath %>"
-        >
-          <source src="/video/<%= video.id %>/stream" type="video/mp4">
-          Seu navegador não suporta a tag de vídeo.
-        </video>
-      </div>
-    </div>
-
-    <!-- 2ª Coluna: Dados do Autor/Vídeo e Comentários -->
-    <div class="col-12 col-lg-4">
-      
-      <h1 class="h4 fw-bold mb-2">
-        <%= video.title %>
-      </h1>
-
-      <div class="d-flex align-items-center mb-3">
-        <img 
-          src="<%= video.User.profilePicture 
-            ? '/uploads/profiles/' + video.User.profilePicture 
-            : '/images/default-profile.png' %>" 
-          alt="<%= video.User.username %>" 
-          class="rounded-circle me-2"
-          width="40" 
-          height="40"
-        >
-
-        <div>
-          <h6 class="mb-0"><%= video.User.fullName %></h6>
-          <small class="text-muted">@<%= video.User.username %></small>
+    <div class="row">
+        <!-- 1ª Coluna: Vídeo -->
+        <div class="col-12 col-lg-4 d-flex justify-content-center">
+            <div class="video-player-container mb-4">
+                <video controls class="w-100 rounded shadow-sm" poster="/uploads/covers/<%= video.thumbnailPath %>">
+                    <source src="/video/<%= video.id %>/stream" type="video/mp4">
+                    Seu navegador não suporta a tag de vídeo.
+                </video>
+            </div>
         </div>
 
-        <span class="ms-auto text-muted small">
-          <%= video.views %> visualizações
-        </span>
-      </div>
+        <!-- 2ª Coluna: Dados do Autor/Vídeo e Comentários -->
+        <div class="col-12 col-lg-4">
+            <h1 class="h4 fw-bold mb-2">
+                <%= video.title %>
+            </h1>
+            <div class="d-flex align-items-center mb-3">
+                <img src="<%= video.User.profilePicture ? 
+                    '/uploads/profiles/' + video.User.profilePicture : 
+                    '/images/default-profile.png' %>" alt="<%= video.User.username %>" class="rounded-circle me-2"
+                    width="40" height="40">
+                <div>
+                    <h6 class="mb-0">
+                        <%= video.User.fullName %>
+                    </h6>
+                    <small class="text-muted">@<%= video.User.username %></small>
+                </div>
+                <span class="ms-auto text-muted small">
+                    <%= video.views %> visualizações
+                </span>
+            </div>
 
-      <div class="card mb-4 shadow-sm">
-        <div class="card-body">
-          <p class="card-text">
-            <%= video.description %>
-          </p>
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <p class="card-text">
+                        <%= video.description %>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Botão de Like e Contagem de Comentários -->
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <button id="likeButton" class="btn btn-light btn-sm rounded-pill px-3 d-flex align-items-center">
+                    <i class="bi <%= isLiked ? 'bi-heart-fill text-danger' : 'bi-heart' %> me-2"></i>
+                    <span id="likesCount"><%= video.likesCount %></span>
+                </button>
+                <span class="text-muted"><%= video.commentsCount %> Comentários</span>
+            </div>
+
+            <!-- Seção de Comentários -->
+            <div class="comments-section">
+                <h5 class="mb-3">Comentários (<span id="commentsCountDisplay"><%= video.commentsCount %></span>)</h5>
+                <% if (user) { %>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h6 class="card-title">Adicionar um comentário</h6>
+                        <form id="commentForm">
+                            <div class="mb-3">
+                                <textarea class="form-control" id="commentContent" rows="3" placeholder="Escreva seu comentário aqui..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm">Comentar</button>
+                        </form>
+                    </div>
+                </div>
+                <% } else { %>
+                <div class="alert alert-info text-center" role="alert">
+                    Faça <a href="/login">login</a> para comentar.
+                </div>
+                <% } %>
+
+                <div id="commentsList" class="list-group list-group-flush">
+                    <!-- Comentários serão carregados aqui via AJAX -->
+                </div>
+            </div>
         </div>
-      </div>
 
-      <!-- Seção de Comentários -->
-      <div class="comments-section">
-        <h5 class="mb-3">Comentários (0)</h5>
-        <div class="alert alert-info">
-          Nenhum comentário ainda. Seja o primeiro a comentar!
+        <!-- 3ª Coluna: Vídeos Sugeridos -->
+        <div class="col-12 col-lg-4 mt-4 mt-lg-0">
+            <h5 class="mb-3">Vídeos Sugeridos</h5>
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center mb-2">
+                    <img src="/images/placeholder-cover.jpg" alt="Capa do Vídeo" class="me-3 rounded" width="80"
+                        height="50">
+                    <div>
+                        <h6 class="mb-0 text-truncate">Título do Vídeo Sugerido 1</h6>
+                        <small class="text-muted">@usuario_sugerido</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center mb-2">
+                    <img src="/images/placeholder-cover.jpg" alt="Capa do Vídeo" class="me-3 rounded" width="80"
+                        height="50">
+                    <div>
+                        <h6 class="mb-0 text-truncate">Título do Vídeo Sugerido 2</h6>
+                        <small class="text-muted">@outro_usuario</small>
+                    </div>
+                </a>
+            </div>
         </div>
-      </div>
-
     </div>
-
-    <!-- 3ª Coluna: Vídeos Sugeridos -->
-    <div class="col-12 col-lg-4 mt-4 mt-lg-0">
-      
-      <h5 class="mb-3">Vídeos Sugeridos</h5>
-
-      <div class="list-group">
-
-        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center mb-2">
-          <img 
-            src="/images/placeholder-cover.jpg" 
-            alt="Capa do Vídeo" 
-            class="me-3 rounded" 
-            width="80" 
-            height="50"
-          >
-          <div>
-            <h6 class="mb-0 text-truncate">Título do Vídeo Sugerido 1</h6>
-            <small class="text-muted">@usuario_sugerido</small>
-          </div>
-        </a>
-
-        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center mb-2">
-          <img 
-            src="/images/placeholder-cover.jpg" 
-            alt="Capa do Vídeo" 
-            class="me-3 rounded" 
-            width="80" 
-            height="50"
-          >
-          <div>
-            <h6 class="mb-0 text-truncate">Título do Vídeo Sugerido 2</h6>
-            <small class="text-muted">@outro_usuario</small>
-          </div>
-        </a>
-
-      </div>
-    </div>
-
-  </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const videoId = "<%= video.id %>";
+        const likeButton = document.getElementById("likeButton");
+        const likesCountSpan = document.getElementById("likesCount");
+        const commentForm = document.getElementById("commentForm");
+        const commentContent = document.getElementById("commentContent");
+        const commentsList = document.getElementById("commentsList");
+        const commentsCountDisplay = document.getElementById("commentsCountDisplay");
+
+        // Função para carregar comentários
+        async function loadComments() {
+            try {
+                const response = await fetch(`/video/${videoId}/comments`);
+                const data = await response.json();
+                if (response.ok) {
+                    commentsList.innerHTML = ""; // Limpa a lista atual
+                    if (data.comments.length > 0) {
+                        data.comments.forEach(comment => {
+                            const commentElement = `
+                                <div class="list-group-item d-flex align-items-start mb-2">
+                                    <img src="${comment.User.profilePicture ? 
+                                        '/uploads/profiles/' + comment.User.profilePicture : 
+                                        '/images/default-profile.png'}" 
+                                        alt="${comment.User.username}" class="rounded-circle me-3" width="40" height="40">
+                                    <div>
+                                        <h6 class="mb-0">${comment.User.fullName} <small class="text-muted">@${comment.User.username}</small></h6>
+                                        <p class="mb-1">${comment.content}</p>
+                                        <small class="text-muted">${new Date(comment.createdAt).toLocaleString()}</small>
+                                    </div>
+                                </div>
+                            `;
+                            commentsList.insertAdjacentHTML("beforeend", commentElement);
+                        });
+                    } else {
+                        commentsList.innerHTML = 
+                            `<div class="alert alert-info text-center" role="alert">
+                                Nenhum comentário ainda. Seja o primeiro a comentar!
+                            </div>`;
+                    }
+                    commentsCountDisplay.textContent = data.comments.length;
+                } else {
+                    console.error("Erro ao carregar comentários:", data.message);
+                }
+            } catch (error) {
+                console.error("Erro de rede ao carregar comentários:", error);
+            }
+        }
+
+        // Carrega os comentários ao carregar a página
+        loadComments();
+
+        // Lógica para o botão de like
+        if (likeButton) {
+            likeButton.addEventListener("click", async () => {
+                try {
+                    const response = await fetch(`/video/${videoId}/toggle-like`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    });
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        let currentLikes = parseInt(likesCountSpan.textContent);
+                        if (data.liked) {
+                            likesCountSpan.textContent = currentLikes + 1;
+                            likeButton.querySelector("i").classList.remove("bi-heart");
+                            likeButton.querySelector("i").classList.add("bi-heart-fill", "text-danger");
+                        } else {
+                            likesCountSpan.textContent = currentLikes - 1;
+                            likeButton.querySelector("i").classList.remove("bi-heart-fill", "text-danger");
+                            likeButton.querySelector("i").classList.add("bi-heart");
+                        }
+                    } else {
+                        alert(data.message || "Erro ao processar o like.");
+                    }
+                } catch (error) {
+                    console.error("Erro de rede ao alternar like:", error);
+                    alert("Erro de rede ao processar o like.");
+                }
+            });
+        }
+
+        // Lógica para o formulário de comentário
+        if (commentForm) {
+            commentForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const content = commentContent.value;
+
+                try {
+                    const response = await fetch(`/video/${videoId}/comment`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ content })
+                    });
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        commentContent.value = ""; // Limpa o campo de texto
+                        loadComments(); // Recarrega os comentários
+                    } else {
+                        alert(data.message || "Erro ao adicionar comentário.");
+                    }
+                } catch (error) {
+                    console.error("Erro de rede ao adicionar comentário:", error);
+                    alert("Erro de rede ao adicionar comentário.");
+                }
+            });
+        }
+    });
+</script>

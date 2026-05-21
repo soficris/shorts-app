@@ -11,6 +11,8 @@ const flash = require('connect-flash');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./modules/user/userRoutes');
 var videoRoutes = require("./modules/video/videoRoutes"); // [ADICIONAR] Importa as rotas de vídeo
+var likeRoutes = require("./modules/like/likeRoutes"); 
+var commentRoutes = require("./modules/comment/commentRoutes"); 
 
 var app = express();
 
@@ -43,6 +45,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter); // se você receber chamado para a raiz do site, passe o controle para o indexRouter
 app.use('/', usersRouter);  
 app.use('/', videoRoutes); // [ADICIONAR] Usa as rotas de vídeo
+app.use('/', likeRoutes); // [ADICIONAR] Usa as rotas de like
+app.use('/', commentRoutes); // [ADICIONAR] Usa as rotas de comentário
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

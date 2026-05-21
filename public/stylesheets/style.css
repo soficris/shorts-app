@@ -253,3 +253,40 @@ border-radius: 8px;
 .profile-videos-grid .video-card {
     margin-bottom: 20px;
 }
+
+/* Estilos para o botão de like */
+#likeButton {
+    background-color: #f0f2f5;
+    border: none;
+    color: #333;
+    font-weight: 600;
+}
+
+#likeButton:hover {
+    background-color: #e0e2e5;
+}
+
+#likeButton i.bi-heart-fill {
+    color: var(--primary-color);
+}
+
+/* Estilos para a seção de comentários */
+.comments-section .card {
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.comments-section .list-group-item {
+    border-left: none;
+    border-right: none;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.comments-section .list-group-item:last-child {
+    border-bottom: none;
+}
+
+.comments-section .list-group-item img {
+    flex-shrink: 0;
+}
