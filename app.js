@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const session = require('express-session');
 const flash = require('connect-flash'); 
+const errorHandler = require('./middlewares/errorHandler'); 
 
 
 var indexRouter = require('./routes/index');
@@ -44,25 +45,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter); // se você receber chamado para a raiz do site, passe o controle para o indexRouter
 app.use('/', usersRouter);  
-app.use('/', videoRoutes); // [ADICIONAR] Usa as rotas de vídeo
-app.use('/', likeRoutes); // [ADICIONAR] Usa as rotas de like
-app.use('/', commentRoutes); // [ADICIONAR] Usa as rotas de comentário
+app.use('/', videoRoutes); 
+app.use('/', likeRoutes); 
+app.use('/', commentRoutes); 
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+// Middleware de tratamento de erros centralizado
+app.use(errorHandler);
 
 require("./config/associations"); 
 

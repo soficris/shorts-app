@@ -1,135 +1,121 @@
 const userService = require("./userService");
 const Video = require("../video/videoModel"); // Ainda necessário para include no renderPublicProfile
+const videoService = require("../video/videoService"); 
 
-exports.register = async (req, res) => {
-    const { username, email, password, confirmPassword, fullName } = req.body;
+const asyncHandler = require("../../middlewares/asyncHandler"); 
 
-    try {
-        if (password !== confirmPassword) {
-            req.flash("error", "As senhas não coincidem.");
-            return res.redirect("/register");
-        }
+exports.register = asyncHandler(async (req, res) => {
+    const { username, email, password, fullName } = req.body;
 
-        await userService.registerUser(
-            username,
-            email,
-            password,
-            fullName
-        );
+    // A validação de senhas coincidentes agora é feita pelo userValidator.
+    await userService.registerUser(
+        username,
+        email,
+        password,
+        fullName
+    );
 
-        req.flash("success", "Conta criada com sucesso! Faça seu login.");
-        res.redirect("/login");
+    req.flash('success', 'Conta criada com sucesso! Faça seu login.');
+    res.redirect('/login');
+});
 
-    } catch (error) {
-        console.error(error);
+exports.login = asyncHandler(async (req, res) => {
+    const { login, password } = req.body;
 
-        req.flash(
-            "error",
-            error.message || "Erro ao criar conta. Verifique os dados e tente novamente."
-        );
+    const user = await userService.loginUser(login, password);
 
-        res.redirect("/register");
-    }
-};
+    const userData = await userService.getUserProfile(user.id);
 
-exports.login = async (req, res) => {
-    try {
-        const { login, password } = req.body;
+    req.session.user = userData;
 
-        const user = await userService.loginUser(login, password);
-        const userData = await userService.getUserProfile(user.id);
+    req.flash(
+        'success',
+        `Bem-vindo de volta, ${userData.username}!`
+    );
 
-        req.session.user = userData;
-
-        res.redirect("/feed");
-
-    } catch (error) {
-        console.error(error);
-
-        req.flash(
-            "error",
-            error.message || "Ocorreu um erro ao tentar entrar."
-        );
-
-        res.redirect("/login");
-    }
-};
+    res.redirect('/feed');
+});
 
 exports.logout = (req, res) => {
     req.session.destroy(() => {
-        res.redirect("/");
+        res.redirect('/');
     });
 };
 
+/**
+ * Função auxiliar para obter perfil.
+ * Não é um handler de rota.
+ */
 exports.getProfile = async (userId) => {
-    try {
-        return await userService.getUserProfile(userId);
-
-    } catch (error) {
-        console.error(error);
-        throw new Error("Erro ao buscar perfil do usuário.");
-    }
+    return await userService.getUserProfile(userId);
 };
 
-exports.updateProfile = async (req, res) => {
-    try {
-        const { fullName, bio } = req.body;
+exports.updateProfile = asyncHandler(async (req, res) => {
+    const { fullName, bio } = req.body;
 
-        const userId = req.session.user.id;
+    const userId = req.session.user.id;
 
-        const newProfilePictureFilename = req.file
-            ? req.file.filename
-            : null;
+    const newProfilePictureFilename = req.file
+        ? req.file.filename
+        : null;
 
-        const updatedUser = await userService.updateUserProfile(
+    const updatedUser =
+        await userService.updateUserProfile(
             userId,
             fullName,
             bio,
             newProfilePictureFilename
         );
 
-        req.session.user = updatedUser;
+    req.session.user = updatedUser;
 
-        req.flash("success", "Perfil atualizado com sucesso!");
+    req.flash(
+        'success',
+        'Perfil atualizado com sucesso!'
+    );
 
-        res.redirect("/profile/edit");
+    res.redirect('/profile/edit');
+});
 
-    } catch (error) {
-        console.error(error);
+exports.renderPublicProfile = asyncHandler(async (req, res) => {
+    const { username } = req.params;
 
-        req.flash(
-            "error",
-            error.message || "Erro ao atualizar perfil."
-        );
+    const user = await userService.getPublicProfile(username);
 
-        res.redirect("/profile/edit");
-    }
+    const isOwner =
+        req.session.user &&
+        req.session.user.id === user.id;
+
+    res.render('profile', {
+        title: `@${user.username} | Shortz-App`,
+        profileUser: user,
+        isOwner
+    });
+});
+
+exports.renderRegisterForm = (req, res) => {
+    res.render('register', {
+        title: 'Criar Conta'
+    });
 };
 
-exports.renderPublicProfile = async (req, res) => {
-    try {
-        const username = req.params.username;
+exports.renderLoginForm = (req, res) => {
+    res.render('login', {
+        title: 'Entrar'
+    });
+};
 
-        const user = await userService.getPublicProfile(username);
+exports.renderFeed = asyncHandler(async (req, res) => {
+    const videos = await videoService.getAllVideos();
 
-        const isOwner =
-            req.session.user &&
-            req.session.user.id === user.id;
+    res.render('feed', {
+        title: 'Feed | Shortz-App',
+        videos
+    });
+});
 
-        res.render("profile", {
-            title: `@${user.username} | Shortz-App`,
-            profileUser: user,
-            isOwner
-        });
-
-    } catch (error) {
-        console.error("Erro ao carregar perfil público:", error);
-
-        req.flash(
-            "error",
-            error.message || "Erro ao carregar o perfil. Tente novamente."
-        );
-
-        res.redirect("/feed");
-    }
+exports.renderEditProfile = (req, res) => {
+    res.render('edit-profile', {
+        title: 'Editar Perfil | Shortz-App'
+    });
 };

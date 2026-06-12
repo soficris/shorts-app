@@ -1,22 +1,20 @@
 var express = require("express");
 var router = express.Router();
 const videoController = require("./videoController");
-const authMiddleware = require("../../middlewares/auth");
-const uploadVideo = require("../../middlewares/videoMulter"); // Importa o Multer para vídeos
+const {uploadValidator} = require("./videoValidator"); 
+const {isAuthenticated} = require("../../middlewares/auth");
+const videoMulter = require("../../middlewares/videoMulter"); // Importa o Multer para vídeos
 
-// Rota para exibir o formulário de upload de vídeo (protegida por autenticação)
-router.get("/upload", authMiddleware, (req, res) => {
-    res.render("upload", { title: "Upload de Vídeo | Shortz-App" });
-});
+const asyncHandler = require("../../middlewares/asyncHandler");
 
-// Rota para processar o upload de vídeo (protegida por autenticação)
-router.post("/upload", authMiddleware, uploadVideo.fields([
+router.get("/upload", isAuthenticated, videoController.renderUploadPage);
+
+router.post("/upload", isAuthenticated, videoMulter.fields([
     { name: "video", maxCount: 1 },
     { name: "thumbnail", maxCount: 1 },
-]), videoController.uploadVideo);
+]), uploadValidator, asyncHandler(videoController.uploadVideo));
 
-router.get("/video/:id/stream", videoController.streamVideo); 
+router.get("/video/:id/stream", isAuthenticated, asyncHandler(videoController.streamVideo));
+router.get("/video/:id", isAuthenticated, asyncHandler(videoController.renderVideoPage));
 
-router.get("/video/:id", videoController.renderVideoPage); 
-
-module.exports = router;
+module.exports = router; 

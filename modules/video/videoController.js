@@ -3,142 +3,124 @@ const videoService = require("./videoService");
 const fs = require("fs");
 const path = require("path");
 
-exports.uploadVideo = async (req, res) => {
-    try {
-        const { title, description } = req.body;
+const asyncHandler = require("../../middlewares/asyncHandler");
 
-        const userId = req.session.user.id;
+exports.uploadVideo = asyncHandler(async (req, res) => {
+    const { title, description } = req.body;
+    const userId = req.session.user.id;
 
-        const videoFile = req.files.video
-            ? req.files.video[0]
-            : null;
+    const videoFile = req.files.video
+        ? req.files.video[0]
+        : null;
 
-        const thumbnailFile = req.files.thumbnail
-            ? req.files.thumbnail[0]
-            : null;
+    const thumbnailFile = req.files.thumbnail
+        ? req.files.thumbnail[0]
+        : null;
 
-        await videoService.uploadVideo(
-            title,
-            description,
-            videoFile,
-            thumbnailFile,
-            userId
+    // O express-validator valida campos de texto,
+    // mas não a existência de arquivos.
+    if (!videoFile || !thumbnailFile) {
+        throw new Error(
+            'Por favor, envie o vídeo e a capa.'
         );
-
-        req.flash("success", "Vídeo enviado com sucesso!");
-
-        res.redirect("/feed");
-
-    } catch (error) {
-        console.error("Erro ao fazer upload do vídeo:", error);
-
-        req.flash(
-            "error",
-            error.message || "Erro ao fazer upload do vídeo. Tente novamente."
-        );
-
-        res.redirect("/upload");
     }
-};
 
-exports.streamVideo = async (req, res) => {
-    const videoId = req.params.id;
+    await videoService.uploadVideo(
+        title,
+        description,
+        videoFile,
+        thumbnailFile,
+        userId
+    );
 
-    try {
-        const video = await videoService.streamVideo(videoId);
+    req.flash('success', 'Vídeo enviado com sucesso!');
+    res.redirect('/feed');
+});
 
-        const videoPath = path.join(
-            __dirname,
-            "../../public/uploads/videos",
-            video.videoPath
-        );
+exports.streamVideo = asyncHandler(async (req, res) => {
+    const { id: videoId } = req.params;
 
-        const stat = fs.statSync(videoPath);
-        const fileSize = stat.size;
+    const video = await videoService.streamVideo(videoId);
 
-        const range = req.headers.range;
+    const videoPath = path.join(
+        __dirname,
+        '../../public/uploads/videos',
+        video.videoPath
+    );
 
-        if (range) {
-            const parts = range
-                .replace(/bytes=/, "")
-                .split("-");
+    const stat = fs.statSync(videoPath);
+    const fileSize = stat.size;
+    const range = req.headers.range;
 
-            const start = parseInt(parts[0], 10);
+    if (range) {
+        const parts = range
+            .replace(/bytes=/, '')
+            .split('-');
 
-            const end = parts[1]
-                ? parseInt(parts[1], 10)
-                : fileSize - 1;
+        const start = parseInt(parts[0], 10);
 
-            const chunksize = (end - start) + 1;
+        const end = parts[1]
+            ? parseInt(parts[1], 10)
+            : fileSize - 1;
 
-            const file = fs.createReadStream(videoPath, {
-                start,
-                end
-            });
+        const chunkSize = end - start + 1;
 
-            const head = {
-                "Content-Range": `bytes ${start}-${end}/${fileSize}`,
-                "Accept-Ranges": "bytes",
-                "Content-Length": chunksize,
-                "Content-Type": "video/mp4",
-            };
+        const file = fs.createReadStream(videoPath, {
+            start,
+            end
+        });
 
-            res.writeHead(206, head);
+        const headers = {
+            'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+            'Accept-Ranges': 'bytes',
+            'Content-Length': chunkSize,
+            'Content-Type': 'video/mp4'
+        };
 
-            file.pipe(res);
+        res.writeHead(206, headers);
+        file.pipe(res);
+    } else {
+        const headers = {
+            'Content-Length': fileSize,
+            'Content-Type': 'video/mp4'
+        };
 
-        } else {
-            const head = {
-                "Content-Length": fileSize,
-                "Content-Type": "video/mp4",
-            };
+        res.writeHead(200, headers);
 
-            res.writeHead(200, head);
-
-            fs.createReadStream(videoPath).pipe(res);
-        }
-
-    } catch (error) {
-        console.error("Erro ao fazer streaming do vídeo:", error);
-
-        res
-            .status(500)
-            .send(error.message || "Erro interno do servidor.");
+        fs.createReadStream(videoPath).pipe(res);
     }
-};
+});
 
+/**
+ * Função auxiliar.
+ * Não é um handler de rota.
+ */
 exports.getAllVideos = async () => {
     return await videoService.getAllVideos();
 };
 
-exports.renderVideoPage = async (req, res) => {
-    const videoId = req.params.id;
+exports.renderVideoPage = asyncHandler(async (req, res) => {
+    const { id: videoId } = req.params;
 
     const currentUserId = req.session.user
         ? req.session.user.id
         : null;
 
-    try {
-        const { video, isLiked } =
-            await videoService.getVideoDetails(
-                videoId,
-                currentUserId
-            );
-
-        res.render("video", {
-            title: video.title,
-            video,
-            isLiked
-        });
-
-    } catch (error) {
-        console.error("Erro ao carregar a página do vídeo:", error);
-
-        req.flash(
-            "error",
-            error.message || "Erro ao carregar o vídeo. Tente novamente."
+    const { video, isLiked } =
+        await videoService.getVideoDetails(
+            videoId,
+            currentUserId
         );
 
-        res.redirect("/feed");
-    }
+    res.render('video', {
+        title: video.title,
+        video,
+        isLiked
+    });
+});
+
+exports.renderUploadPage = (req, res) => {
+    res.render('upload', {
+        title: 'Upload de Vídeo | Shortz-App'
+    });
 };
