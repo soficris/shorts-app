@@ -1,8 +1,8 @@
 const userService = require("./userService");
 const Video = require("../video/videoModel"); // Ainda necessário para include no renderPublicProfile
-const videoService = require("../video/videoService"); 
+const videoService = require("../video/videoService");
 
-const asyncHandler = require("../../middlewares/asyncHandler"); 
+const asyncHandler = require("../../middlewares/asyncHandler");
 
 exports.register = asyncHandler(async (req, res) => {
     const { username, email, password, fullName } = req.body;
@@ -42,10 +42,8 @@ exports.logout = (req, res) => {
     });
 };
 
-/**
- * Função auxiliar para obter perfil.
- * Não é um handler de rota.
- */
+// Função auxiliar para obter perfil. Não é um handler de rota.
+
 exports.getProfile = async (userId) => {
     return await userService.getUserProfile(userId);
 };
@@ -106,12 +104,22 @@ exports.renderLoginForm = (req, res) => {
 };
 
 exports.renderFeed = asyncHandler(async (req, res) => {
-    const videos = await videoService.getAllVideos();
+    const currentUserId = req.session.user ? req.session.user.id : null;
+    const videos = await videoService.getFeedVideos(currentUserId);
+    res.render("feed", { title: "Feed | Shortz-App", videos });
+});
 
-    res.render('feed', {
-        title: 'Feed | Shortz-App',
-        videos
-    });
+exports.renderPublicProfile = asyncHandler(async (req, res) => {
+    const username = req.params.username;
+    const user = await userService.getPublicProfile(username);
+
+    const isOwner = req.session.user && req.session.user.id === user.id;
+    let isFollowing = false;
+    if (!isOwner && req.session.user) {
+        const followStatus = await userService.getFollowStatusForUser(req.session.user.id, user.id); isFollowing = followStatus.isFollowing;
+    }
+    
+    res.render("profile", { title: `@${user.username} | Shortz-App`, profileUser: user, isOwner, isFollowing });
 });
 
 exports.renderEditProfile = (req, res) => {

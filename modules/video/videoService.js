@@ -1,6 +1,8 @@
 const Video = require("./videoModel");
 const User = require("../user/userModel");
+const { Op } = require("sequelize"); 
 const Like = require("../like/likeModel");
+const Follow = require("../follow/followModel");
 
 const fs = require("fs");
 const path = require("path");
@@ -60,6 +62,53 @@ async function getAllVideos() {
         order: [["createdAt", "DESC"]],
         limit: 20
     });
+
+    return videos;
+}
+
+async function getFeedVideos(currentUserId = null, offset = 0, limit = 20) {
+    let whereClause = {};
+    let followedUserIds = [];
+
+    if (currentUserId) {
+        // Encontrar IDs dos usuários que o currentUserId segue
+        const follows = await Follow.findAll({
+            where: { followerId: currentUserId },
+            attributes: ["followingId"]
+        });
+        followedUserIds = follows.map(follow => follow.followingId);
+        if (followedUserIds.length > 0) {
+            // Se segue alguém, prioriza vídeos desses usuários
+            whereClause = { userId: { [Op.in]: followedUserIds } };
+        }
+    }
+
+    // Primeiro, tenta buscar vídeos de usuários seguidos (se houver)
+    let videos = await Video.findAll({
+        where: whereClause,
+        include: [{
+            model: User,
+            attributes: ["id", "username", "fullName", "profilePicture"]
+        }],
+        order: [["createdAt", "DESC"]],
+        offset, limit
+    });
+
+    // Se não houver vídeos de seguidos ou se o usuário não segue ninguém, ou se não preencheu o limite, busca vídeos globais
+    if (videos.length < limit && (currentUserId === null || followedUserIds.length === 0 || videos.length === 0)) {
+        const globalVideosToFetch = limit - videos.length;
+        const globalVideos = await Video.findAll({
+            where: { ...whereClause, id: { [Op.notIn]: videos.map(v => v.id) } }, // Evita duplicatas
+            include: [{
+                model: User,
+                attributes: ["id", "username", "fullName", "profilePicture"]
+            }],
+            order: [["createdAt", "DESC"]],
+            offset: offset > 0 ? offset - videos.length : 0, // Ajusta o offset para buscar globalmente
+            limit: globalVideosToFetch
+        });
+        videos = [...videos, ...globalVideos];
+    }
 
     return videos;
 }
@@ -124,5 +173,6 @@ module.exports = {
     uploadVideo,
     streamVideo,
     getAllVideos,
-    getVideoDetails
+    getVideoDetails,
+    getFeedVideos 
 };
