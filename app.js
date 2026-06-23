@@ -15,6 +15,7 @@ var videoRoutes = require("./modules/video/videoRoutes"); // [ADICIONAR] Importa
 var likeRoutes = require("./modules/like/likeRoutes"); 
 var commentRoutes = require("./modules/comment/commentRoutes"); 
 var followRoutes = require("./modules/follow/followRoutes");
+var playlistRoutes = require("./modules/playlist/playlistRoutes"); 
 
 var app = express();
 
@@ -50,6 +51,7 @@ app.use('/', videoRoutes);
 app.use('/', likeRoutes); 
 app.use('/', commentRoutes); 
 app.use('/', followRoutes); 
+app.use('/', playlistRoutes); 
 
 // Middleware de tratamento de erros centralizado
 app.use(errorHandler);
