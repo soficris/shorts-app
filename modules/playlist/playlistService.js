@@ -89,10 +89,34 @@ async function deletePlaylist(playlistId, userId) {
     return { success: true, message: "Playlist excluída com sucesso." };
 }
 
+async function getUserPlaylistsWithVideoStatus(userId, videoId) {
+    const playlists = await Playlist.findAll({
+        where: { userId },
+        include: [{
+            model: Video,
+            attributes: ["id"],
+            through: { attributes: [] },
+            where: { id: videoId },
+            required: false // LEFT JOIN para verificar se o vídeo já está na playlist
+        }],
+        order: [["createdAt", "DESC"]]
+    });
+
+    return playlists.map(playlist => ({
+        id: playlist.id,
+        title: playlist.title,
+        isPublic: playlist.isPublic,
+        videosCount: playlist.videosCount,
+        hasVideo: playlist.Videos.length > 0
+    }));
+}
+
 module.exports = {
     createPlaylist,
     getUserPlaylists,
     getPlaylistById,
     addVideoToPlaylist,
-    removeVideoFromPlaylist, deletePlaylist
+    removeVideoFromPlaylist, 
+    deletePlaylist, 
+    getUserPlaylistsWithVideoStatus
 }

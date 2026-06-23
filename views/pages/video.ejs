@@ -9,17 +9,15 @@
                 </video>
             </div>
         </div>
-
         <!-- 2ª Coluna: Dados do Autor/Vídeo e Comentários -->
         <div class="col-12 col-lg-4">
             <h1 class="h4 fw-bold mb-2">
                 <%= video.title %>
             </h1>
             <div class="d-flex align-items-center mb-3">
-                <img src="<%= video.User.profilePicture ? 
-                    '/uploads/profiles/' + video.User.profilePicture : 
-                    '/images/default-profile.png' %>" alt="<%= video.User.username %>" class="rounded-circle me-2"
-                    width="40" height="40">
+                <img src="<%= video.User.profilePicture ?
+'/uploads/profiles/' + video.User.profilePicture :
+'/images/default-profile.png' %>" alt="<%= video.User.username %>" class="rounded-circle me-2" width="40" height="40">
                 <div>
                     <h6 class="mb-0">
                         <%= video.User.fullName %>
@@ -30,7 +28,6 @@
                     <%= video.views %> visualizações
                 </span>
             </div>
-
             <div class="card mb-4 shadow-sm">
                 <div class="card-body">
                     <p class="card-text">
@@ -38,43 +35,52 @@
                     </p>
                 </div>
             </div>
-
-            <!-- Botão de Like e Contagem de Comentários -->
+            <!-- Botão de Like, Adicionar à Playlist e Contagem de Comentários -->
             <div class="d-flex align-items-center gap-3 mb-4">
                 <button id="likeButton" class="btn btn-light btn-sm rounded-pill px-3 d-flex align-items-center">
                     <i class="bi <%= isLiked ? 'bi-heart-fill text-danger' : 'bi-heart' %> me-2"></i>
-                    <span id="likesCount"><%= video.likesCount %></span>
+                    <span id="likesCount">
+                        <%= video.likesCount %>
+                    </span>
                 </button>
-                <span class="text-muted"><%= video.commentsCount %> Comentários</span>
+                <% if (user) { %>
+                    <button type="button" class="btn btn-light btn-sm rounded-pill px-3 d-flex align-items-center"
+                        data-bs-toggle="modal" data-bs-target="#addToPlaylistModal">
+                        <i class="bi bi-plus-square me-2"></i> Adicionar à Playlist
+                    </button>
+                    <% } %>
+                        <span class="text-muted">
+                            <%= video.commentsCount %> Comentários
+                        </span>
             </div>
-
             <!-- Seção de Comentários -->
             <div class="comments-section">
-                <h5 class="mb-3">Comentários (<span id="commentsCountDisplay"><%= video.commentsCount %></span>)</h5>
+                <h5 class="mb-3">Comentários (<span id="commentsCountDisplay">
+                        <%= video.commentsCount %>
+                    </span>)</h5>
                 <% if (user) { %>
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h6 class="card-title">Adicionar um comentário</h6>
-                        <form id="commentForm">
-                            <div class="mb-3">
-                                <textarea class="form-control" id="commentContent" rows="3" placeholder="Escreva seu comentário aqui..."></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-sm">Comentar</button>
-                        </form>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title">Adicionar um comentário</h6>
+                            <form id="commentForm">
+                                <div class="mb-3">
+                                    <textarea class="form-control" id="commentContent" rows="3"
+                                        placeholder="Escreva seu comentário aqui..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm">Comentar</button>
+                            </form>
+                        </div>
                     </div>
-                </div>
-                <% } else { %>
-                <div class="alert alert-info text-center" role="alert">
-                    Faça <a href="/login">login</a> para comentar.
-                </div>
-                <% } %>
-
-                <div id="commentsList" class="list-group list-group-flush">
-                    <!-- Comentários serão carregados aqui via AJAX -->
-                </div>
+                    <% } else { %>
+                        <div class="alert alert-info text-center" role="alert">
+                            Faça <a href="/login">login</a> para comentar.
+                        </div>
+                        <% } %>
+                            <div id="commentsList" class="list-group list-group-flush">
+                                <!-- Comentários serão carregados aqui via AJAX -->
+                            </div>
             </div>
         </div>
-
         <!-- 3ª Coluna: Vídeos Sugeridos -->
         <div class="col-12 col-lg-4 mt-4 mt-lg-0">
             <h5 class="mb-3">Vídeos Sugeridos</h5>
@@ -99,7 +105,6 @@
         </div>
     </div>
 </div>
-
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const videoId = "<%= video.id %>";
@@ -109,7 +114,6 @@
         const commentContent = document.getElementById("commentContent");
         const commentsList = document.getElementById("commentsList");
         const commentsCountDisplay = document.getElementById("commentsCountDisplay");
-
         // Função para carregar comentários
         async function loadComments() {
             try {
@@ -121,21 +125,23 @@
                         data.comments.forEach(comment => {
                             const commentElement = `
                                 <div class="list-group-item d-flex align-items-start mb-2">
-                                    <img src="${comment.User.profilePicture ? 
-                                        '/uploads/profiles/' + comment.User.profilePicture : 
-                                        '/images/default-profile.png'}" 
-                                        alt="${comment.User.username}" class="rounded-circle me-3" width="40" height="40">
-                                    <div>
-                                        <h6 class="mb-0">${comment.User.fullName} <small class="text-muted">@${comment.User.username}</small></h6>
-                                        <p class="mb-1">${comment.content}</p>
-                                        <small class="text-muted">${new Date(comment.createdAt).toLocaleString()}</small>
-                                    </div>
+                                <img src="${comment.User.profilePicture ?
+                                                                    '/uploads/profiles/' + comment.User.profilePicture :
+                                                                    '/images/default-profile.png'}"
+                                alt="${comment.User.username}" class="rounded-circle me-3" width="40" height="40">
+                                <div>
+                                <h6 class="mb-0">${comment.User.fullName}
+                                <small class="text-muted">@${comment.User.username}
+                                </small>
+                                </h6><p class="mb-1">${comment.content}</p>
+                                <small class="text-muted">${new Date(comment.createdAt).toLocaleString()}</small>
                                 </div>
-                            `;
+                                </div>
+                                `;
                             commentsList.insertAdjacentHTML("beforeend", commentElement);
                         });
                     } else {
-                        commentsList.innerHTML = 
+                        commentsList.innerHTML =
                             `<div class="alert alert-info text-center" role="alert">
                                 Nenhum comentário ainda. Seja o primeiro a comentar!
                             </div>`;
@@ -148,10 +154,8 @@
                 console.error("Erro de rede ao carregar comentários:", error);
             }
         }
-
         // Carrega os comentários ao carregar a página
         loadComments();
-
         // Lógica para o botão de like
         if (likeButton) {
             likeButton.addEventListener("click", async () => {
@@ -161,9 +165,7 @@
                         headers: {
                             "Content-Type": "application/json"
                         }
-                    });
-                    const data = await response.json();
-
+                    }); const data = await response.json();
                     if (response.ok) {
                         let currentLikes = parseInt(likesCountSpan.textContent);
                         if (data.liked) {
@@ -184,13 +186,11 @@
                 }
             });
         }
-
         // Lógica para o formulário de comentário
         if (commentForm) {
             commentForm.addEventListener("submit", async (e) => {
                 e.preventDefault();
                 const content = commentContent.value;
-
                 try {
                     const response = await fetch(`/video/${videoId}/comment`, {
                         method: "POST",
@@ -200,7 +200,6 @@
                         body: JSON.stringify({ content })
                     });
                     const data = await response.json();
-
                     if (response.ok) {
                         commentContent.value = ""; // Limpa o campo de texto
                         loadComments(); // Recarrega os comentários
@@ -213,5 +212,104 @@
                 }
             });
         }
+        // Lógica para o modal de adicionar à playlist
+        const addToPlaylistModal = document.getElementById("addToPlaylistModal");
+        if (addToPlaylistModal) {
+            addToPlaylistModal.addEventListener("show.bs.modal", async (event) => {
+                const playlistList = document.getElementById("playlistList");
+                playlistList.innerHTML =
+                    `<div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                    </div>`;
+                try {
+                    const response = await fetch(`/playlists/video/${videoId}/status`);
+                    const data = await response.json();
+                    if (response.ok) {
+                        playlistList.innerHTML = ""; if (data.playlists.length > 0) {
+                            data.playlists.forEach(playlist => {
+                                const isChecked = playlist.hasVideo ? "checked" : "";
+                                const playlistItem = `
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="${playlist.id}"
+                                            id="playlist-${playlist.id}" ${isChecked}>
+                                        <label class="form-check-label" for="playlist-${playlist.id}">
+                                            ${playlist.title} ${playlist.isPublic ? "" : "<i class=\"bibi-lock-fill text-muted ms-1\"></i>"}
+                                        </label>
+                                    </div>
+                                `;
+                                playlistList.insertAdjacentHTML("beforeend", playlistItem);
+                            });
+                            // Adicionar event listeners para os checkboxes
+                            playlistList.querySelectorAll(".form-check-input").forEach(checkbox => {
+                                checkbox.addEventListener("change", async (e) => {
+                                    const targetPlaylistId = e.target.value;
+                                    const isAdding = e.target.checked;
+                                    const url = isAdding ? "/playlist/add-video" : "/playlist/remove-video";
+
+                                    try {
+                                        const actionResponse = await fetch(url, {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify({ playlistId: targetPlaylistId, videoId: videoId })
+                                    });
+                                    const actionData = await actionResponse.json();
+
+                                    if (!actionResponse.ok) {
+                                        alert(actionData.message || "Erro ao atualizar playlist.");e.target.checked = !isAdding; // Reverter o estado do checkbox em caso de erro
+                                    }
+                                    } catch (error) {
+                                        console.error("Erro de rede ao atualizar playlist:", error);
+                                        alert("Erro de rede ao atualizar playlist.");
+                                        e.target.checked = !isAdding; // Reverter o estado do checkbox em caso de erro
+                                    }
+                                });
+                            });
+                        } else {
+                            playlistList.innerHTML =
+                                `< div class= "alert alert-info" role = "alert" >
+                                    Você ainda não tem playlists.Crie uma em "Minhas Playlists"!
+                                </div > `;
+                        }
+                    } else {
+                            alert(data.message || "Erro ao carregar playlists.");
+                            playlistList.innerHTML =
+                            `< div class= "alert alert-danger" role = "alert" >
+                                Erro ao carregar playlists.
+                            </div > `;
+                    }
+                } catch (error) {
+                            console.error("Erro de rede ao carregar playlists:", error);
+                            playlistList.innerHTML =
+                            `< div class= "alert alert-danger" role = "alert" >
+                                                        Erro de rede ao carregar playlists.
+                            </div >`;
+                }
+            });
+        }
     });
 </script>
+
+<!-- Modal Adicionar à Playlist -->
+<div class="modal fade" id="addToPlaylistModal" tabindex="-1" aria-labelledby="addToPlaylistModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addToPlaylistModalLabel">Adicionar à Playlist</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="playlistList">
+                    <!-- Playlists serão carregadas aqui via AJAX -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>

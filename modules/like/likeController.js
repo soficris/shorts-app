@@ -12,7 +12,13 @@ exports.toggleLike = asyncHandler(async (req, res) => {
 exports.checkLikeStatus = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
     const userId = req.session.user.id;
-    
+
     const liked = await likeService.checkLikeStatus(userId, videoId);
     res.status(200).json({ liked });
+});
+
+exports.renderLikedVideos = asyncHandler(async (req, res) => {
+    const userId = req.session.user.id;
+    const likedVideos = await likeService.getLikedVideos(userId);
+    res.render("liked-videos", { title: "Vídeos Curtidos", videos: likedVideos });
 });

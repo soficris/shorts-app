@@ -1,6 +1,6 @@
 const Video = require("./videoModel");
 const User = require("../user/userModel");
-const { Op } = require("sequelize"); 
+const { Op } = require("sequelize");
 const Like = require("../like/likeModel");
 const Follow = require("../follow/followModel");
 
@@ -169,10 +169,33 @@ async function getVideoDetails(videoId, currentUserId = null) {
     };
 }
 
+async function getVideosFromFollowing(userId) {
+    const following = await Follow.findAll({
+        where: { followerId: userId },
+        attributes: ["followingId"]
+    }); 
+    
+    const followingIds = following.map(f => f.followingId);
+    if (followingIds.length === 0) {
+        return [];
+    }
+
+    const videos = await Video.findAll({
+        where: { userId: { [Op.in]: followingIds } },
+        include: [{
+            model: User,
+            attributes: ["id", "username", "fullName", "profilePicture"]
+        }],
+        order: [["createdAt", "DESC"]]
+    });
+    return videos;
+}
+
 module.exports = {
     uploadVideo,
     streamVideo,
     getAllVideos,
     getVideoDetails,
-    getFeedVideos 
+    getFeedVideos, 
+    getVideosFromFollowing
 };

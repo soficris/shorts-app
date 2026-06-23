@@ -10,4 +10,7 @@ router.post("/video/:videoId/toggle-like", isAuthenticated, asyncHandler(likeCon
 // Rota para verificar o status do like de um vídeo para o usuário logado
 router.get("/video/:videoId/like-status", isAuthenticated, asyncHandler(likeController.checkLikeStatus));
 
+// Rota para a página de vídeos curtidos 
+router.get("/liked-videos", isAuthenticated, likeController.renderLikedVideos);
+
 module.exports = router; 

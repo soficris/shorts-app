@@ -1,5 +1,6 @@
 const Like = require("./likeModel");
 const Video = require("../video/videoModel");
+const User = require("../user/userModel");
 
 async function toggleLike(userId, videoId) {
     const [like, created] = await Like.findOrCreate({
@@ -43,7 +44,23 @@ async function checkLikeStatus(userId, videoId) {
     return !!like;
 }
 
+async function getLikedVideos(userId) {
+    const likedVideos = await Like.findAll({
+        where: { userId }, include: [{
+            model: Video,
+            attributes: ["id", "title", "thumbnailPath", "views", "createdAt"],
+            include: [{
+                model: User,
+                attributes: ["id", "username", "fullName", "profilePicture"]
+            }]
+        }],
+        order: [["createdAt", "DESC"]]
+    });
+    return likedVideos.map(like => like.Video);
+}
+
 module.exports = {
     toggleLike,
-    checkLikeStatus
+    checkLikeStatus, 
+    getLikedVideos
 };

@@ -55,3 +55,10 @@ exports.deletePlaylist = asyncHandler(async (req, res) => {
     req.flash("success", "Playlist excluída com sucesso!");
     res.redirect("/my-playlists");
 });
+
+exports.getPlaylistsForVideo = asyncHandler(async (req, res) => {
+    const userId = req.session.user.id;
+    const videoId = req.params.videoId;
+    const playlists = await playlistService.getUserPlaylistsWithVideoStatus(userId, videoId);
+    res.status(200).json({ playlists });
+});

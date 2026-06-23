@@ -16,6 +16,8 @@ var likeRoutes = require("./modules/like/likeRoutes");
 var commentRoutes = require("./modules/comment/commentRoutes"); 
 var followRoutes = require("./modules/follow/followRoutes");
 var playlistRoutes = require("./modules/playlist/playlistRoutes"); 
+var followingVideosRoutes = require("./modules/follow/followingVideosRoutes"); 
+var searchRoutes = require("./modules/search/searchRoutes"); 
 
 var app = express();
 
@@ -52,6 +54,8 @@ app.use('/', likeRoutes);
 app.use('/', commentRoutes); 
 app.use('/', followRoutes); 
 app.use('/', playlistRoutes); 
+app.use('/', followingVideosRoutes); 
+app.use('/', searchRoutes);
 
 // Middleware de tratamento de erros centralizado
 app.use(errorHandler);

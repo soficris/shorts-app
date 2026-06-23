@@ -17,4 +17,6 @@ router.post("/playlist/remove-video", isAuthenticated, playlistController.remove
 
 router.post("/playlist/:id/delete", isAuthenticated, playlistController.deletePlaylist);
 
+router.get("/playlists/video/:videoId/status", isAuthenticated, playlistController.getPlaylistsForVideo);
+
 module.exports = router;
