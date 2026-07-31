@@ -1,10 +1,9 @@
 const { body, validationResult } = require('express-validator');
 const { VALIDATION } = require('../../config/constants');
 
-/**
- * Middleware para verificar os resultados da validação.
- * Se houver erros, lança uma exceção que será capturada pelo errorHandler.
- */
+//Middleware para verificar os resultados da validação.
+//Se houver erros, lança uma exceção que será capturada pelo errorHandler.
+
 const validate = (req, res, next) => {
     const errors = validationResult(req);
 

@@ -31,7 +31,7 @@ async function uploadVideo(
         where: { id: userId }
     });
 
-    return newVideo;
+    await notificationService.createNewVideoNotification(userId, newVideo.id, newVideo.title);
 }
 
 async function streamVideo(videoId) {

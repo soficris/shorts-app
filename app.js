@@ -57,6 +57,13 @@ app.use('/', playlistRoutes);
 app.use('/', followingVideosRoutes); 
 app.use('/', searchRoutes);
 
+// Captura qualquer rota não tratada pelos routers acima
+app.use((req, res, next) => {
+  const error = new Error("Página não encontrada");
+  error.status = 404;
+  next(error);
+}); 
+
 // Middleware de tratamento de erros centralizado
 app.use(errorHandler);
 

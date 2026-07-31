@@ -16,7 +16,7 @@ const PlaylistVideo = sequelize.define("PlaylistVideo", {
     tableName: "playlist_videos",
     timestamps: false,
     indexes: [
-        { unique: true, fields: ["playlistId", "videoId"], name: "idx_unique_playlist_video" }
+        { unique: true, fields: ["playlist_id", "video_id"], name: "idx_unique_playlist_video" }
     ]
 }); 
 
